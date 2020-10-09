@@ -1,0 +1,61 @@
+#TIMESCALE
+...
+
+#NODE Baking
+#PARAMETERS
+initial_stock_bread_item = 0
+opex_eur_p_bread_item = 2
+#VARIABLES
+input: flour_kg
+internal: stock_bread_item
+internal: baked_bread_item
+output: bread_item
+#CONSTRAINTS
+baked_bread_item = 2.0 * flour_kg
+stock_bread_item[0] = initial_stock_bread_item
+stock_bread_item[t+1] = stock_bread_item[t] + baked_bread_item - bread_item
+#OBJECTIVES
+min: stock_bread_item * opex_eur_p_bread_item
+
+#NODE Milling
+#PARAMETERS
+initial_stock_flour_kg = 0
+opex_eur_p_flour_kg = 1
+#VARIABLES
+input: grain_ton
+internal: stock_flour_kg
+internal: milled_flour_kg
+output: flour_kg
+#CONSTRAINTS
+milled_flour_kg = 0.95 * grain_ton * 1000
+stock_flour_kg[0] = initial_stock_flour_kg
+stock_flour_kg[t+1] = stock_flour_kg[t] + milled_flour_kg - flour_kg
+#OBJECTIVES
+min: stock_bread_item * opex_eur_p_bread_item
+
+#NODE Farming
+#PARAMETERS
+opex_eur_p_hectare_p_year = 300
+petrol_price_eur_p_l = 0.6
+min_land_hectare = 100
+max_land_hectare = 1000
+initial_stock_grain_ton = 0
+opex_eur_p_grain_ton = 25
+#VARIABLES
+input: land_hectare
+internal: petrol_l
+internal: stock_grain_ton
+internal: harvested_grain_ton
+output: grain_ton
+#CONSTRAINTS
+land_hectare >= min_land_hectare
+land_hectare <= max_land_hectare
+harvested_grain_ton = 6000 * land_hectare
+petrol_l = 21.0 * land_hectare
+stock_grain_ton[0] = initial_stock_grain_ton
+stock_grain_ton[t+1] = stock_grain_ton[t] + harvested_grain_ton - grain_ton
+#OBJECTIVES
+min: (land_hectare * opex_eur_p_hectare_p_year) + (petrol_l * petrol_price_eur_p_l) + (stock_grain_ton * opex_eur_p_grain_ton)
+
+#EDGES
+...

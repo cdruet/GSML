@@ -1,0 +1,10 @@
+#NODE identifier
+#PARAMETERS
+constant = 2.0
+vector = {1, 2, 3, 4, 5}
+#VARIABLES
+...
+#CONSTRAINTS
+...
+#OBJECTIVES
+...

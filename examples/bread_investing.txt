@@ -1,0 +1,30 @@
+#TIMESCALE
+...
+
+#NODE Milling
+#PARAMETERS
+initial_stock_flour_kg = 0
+opex_eur_p_flour_kg = 0.25
+capex_eur_p_flour_kg = 50
+depreciation_period = 20
+max_capacity_stock_flour_kg = 1000000
+#VARIABLES
+input: grain_ton
+internal: capacity_stock_flour_kg
+internal: stock_flour_kg
+internal: milled_flour_kg
+output: flour_kg
+#CONSTRAINTS
+capacity_stock_flour_kg[t] = capacity_stock_flour_kg[0]
+capacity_stock_flour_kg[t] >= 0.0
+capacity_stock_flour_kg[t] <= max_capacity_stock_flour_kg
+milled_flour_kg = 0.95 * grain_ton * 1000
+stock_flour_kg[0] = initial_stock_flour_kg
+stock_flour_kg >= 0.0
+stock_flour_kg <= capacity_stock_flour_kg
+stock_flour_kg[t+1] = stock_flour_kg[t] + milled_flour_kg - flour_kg
+#OBJECTIVES
+min: (stock_bread_item * opex_eur_p_bread_item) + (capacity_stock_flour_kg * capex_eur_p_flour_kg / depreciation_period)
+
+#EDGES
+...

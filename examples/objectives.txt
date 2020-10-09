@@ -1,0 +1,15 @@
+#NODE identifier
+#PARAMETERS
+param1 = 10.0
+vector = {1, 2, 3... 24}
+#VARIABLES
+input: variable1
+output: variable2
+internal: variable3
+#CONSTRAINTS
+variable1[0] = param1
+variable3 = vector[t] * vector[t]
+variable1[t+1] = variable1[t] + variable3[t]
+variable2 = 1.25 * variable1
+#OBJECTIVES
+min: 250 * variable3

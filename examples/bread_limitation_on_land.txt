@@ -1,0 +1,23 @@
+#TIMESCALE
+...
+
+#NODE Farming
+#PARAMETERS
+opex_eur_p_hectare_p_year = 300
+petrol_price_eur_p_l = 0.6
+min_land_hectare = 100
+max_land_hectare = 1000
+#VARIABLES
+input: land_hectare
+internal: petrol_l
+output: grain_ton
+#CONSTRAINTS
+land_hectare >= min_land_hectare
+land_hectare <= max_land_hectare
+grain_ton = 6000 * land_hectare
+petrol_l = 21.0 * land_hectare
+#OBJECTIVES
+min: (land_hectare * opex_eur_p_hectare_p_year) + (petrol_l * petrol_price_eur_p_l)
+
+#EDGES
+...

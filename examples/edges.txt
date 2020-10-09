@@ -1,0 +1,25 @@
+#NODE A
+#PARAMETERS
+...
+#VARIABLES
+input: gas
+output: electricity
+#CONSTRAINTS
+...
+#OBJECTIVES
+...
+
+#NODE B
+#PARAMETERS
+...
+#VARIABLES
+input: electricity
+input: paper
+output: book
+#CONSTRAINTS
+...
+#OBJECTIVES
+...
+
+#EDGES
+A.electricity = B.electricity

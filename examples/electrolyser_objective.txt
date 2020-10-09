@@ -1,0 +1,18 @@
+#NODE Electrolyser
+#PARAMETERS
+capacity_kWh = 1
+water_l_price = { 0.1, 0.11, 0.13, 0.9, ... }
+electricity_kWh_price = { 0.12, 0.119, 0.11, 0.13 ... }
+#VARIABLES
+input: water_l
+input: electricity_kWh
+output: oxygen_kg
+output: hydrogen_kg
+#CONSTRAINTS
+electricity_kWh = 55.0 * hydrogen_kg
+water_l = 9.0 * hydrogen_kg
+oxygen_kg = 8.0 * hydroge_kg
+electricity_kWh >= 0.0
+electricity_kWh <= capacity_kWh
+#OBJECTIVES
+min: (water_l * water_l_price) + (electricity_kWh * electricity_kWh_price)

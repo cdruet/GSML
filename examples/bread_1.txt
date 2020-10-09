@@ -1,0 +1,54 @@
+#TIMESCALE
+horizon: 10 // = 10 year
+step: 1 // 1 year
+
+#NODE Eating
+#PARAMETERS
+demand_item = { 100000, 100500, 110000, 125000, 90000, 115000, 120000, 150000, 125000, 130000 }
+value_of_missing_item = 1.5
+#VARIABLES
+input: bread_item
+internal: missing_item
+#constraints
+bread_item = demand_item - missing_item
+#OBJECTIVES
+min: missing_item * value_of_missing_item
+
+#NODE Baking
+#PARAMETERS
+#VARIABLES
+input: flour_kg
+output: bread_item
+#CONSTRAINTS
+bread_item = 2.0 * flour_kg
+
+#NODE Milling
+#PARAMETERS
+#VARIABLES
+input: grain_ton
+output: flour_kg
+#CONSTRAINTS
+flour_kg = 0.95 * grain_ton * 1000
+
+#NODE Farming
+#PARAMETERS
+opex_eur_p_hectare_p_year = 300
+min_land_hectare = 100
+max_land_hectare = 1000
+petrol_price_eur_p_l = 0.6
+#VARIABLES
+input: land_hectare
+internal: petrol_l
+output: grain_ton
+#CONSTRAINTS
+grain_ton = 6000 * land_hectare
+land_hectare >= min_land_hectare
+land_hectare <= max_land_hectare
+petrol_l = 21.0 * land_hectare / 365
+#OBJECTIVES
+min: (land_hectare * opex_eur_p_hectare_p_year / 365) + (petrol_l * petrol_price_eur_p_l)
+
+#EDGES
+Eating.bread_item = Baking.bread_item
+Baking.flour_kg = Milling.flour_kg
+Milling.grain_ton = Farming.grain_ton

@@ -1,0 +1,19 @@
+#TIMESCALE
+...
+
+#NODE Eating
+#PARAMETERS
+demand_item = { 100000, 100500, 110000, 125000, 90000, 115000, 120000, 150000, 125000, 130000 }
+value_of_missing_item = 1.5
+#VARIABLES
+input: bread_item
+internal: missing_item
+#constraints
+bread_item = demand_item - missing_item
+#OBJECTIVES
+min: missing_item * value_of_missing_item
+
+...
+
+#EDGES
+...

@@ -1,0 +1,11 @@
+#NODE identifier
+#PARAMETERS
+...
+#VARIABLES
+input: variable1
+output: variable2
+internal: variable3
+#CONSTRAINTS
+...
+#OBJECTIVES
+...

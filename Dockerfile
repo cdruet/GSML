@@ -14,7 +14,7 @@ RUN wget http://downloads.sourceforge.net/project/plantuml/plantuml.jar -P /opt/
     && chmod +x /usr/local/bin/plantuml
 
 COPY ./server.py /opt/sphinx-server/
-COPY ./.sphinx-server.prod.yml /opt/sphinx-server/
+COPY ./.sphinx-server.prod.yml /opt/sphinx-server/.sphinx-server.yml
 COPY ./_build/html /web/_build/html
 
 WORKDIR /web

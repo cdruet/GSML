@@ -28,7 +28,7 @@ run: compile-dev
 
 app=GSMLDoc
 lower_app=$(shell python3 -c "print('$(app)'.lower())")
-version=20.10.09
+version=20.10.23
 url=www.gsml.site
 port=22003
 ssl=0
@@ -41,8 +41,6 @@ compile:
 
 save:
 	docker save $(lower_app):$(version) | gzip > ~/Apps/$(lower_app).tgz
-
-build: compile save
 
 upload:
 	scp ~/Apps/$(lower_app).tgz cdruet@fundocker:/home/cdruet/apps/
@@ -60,9 +58,7 @@ import: stop
 	-ssh cdruet@fundocker docker image prune -f
 	-ssh cdruet@fundocker rm -f /home/cdruet/apps/$(lower_app).tgz
 
-install: upload import
-
-all: build install
+install: compile save upload import
 
 compose: stop prune
 	ssh cdruet@fundocker docker run -d \

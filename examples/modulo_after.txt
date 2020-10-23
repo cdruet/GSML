@@ -1,0 +1,14 @@
+#TIMESCALE
+horizon: 1825 // 5 years * 365 days
+step: 1 // 1 day
+
+#NODE Farming
+#PARAMETERS
+available_hectares = { 100, 50, 150, 200, 250 }
+#VARIABLES
+input: crops
+internal: hectares
+output: grains
+#CONSTRAINTS
+hectares[t] <= available_hectares[(t - (t % 365)) / 365]
+hectares[t] <= available_hectares[t // 365]

@@ -4,7 +4,7 @@ From wheat to bread
 To describe a more sophisticated  system involving multiple nodes, let
 us go back to our bread example.
 
-.. image:: ./illustrations/bread.png
+.. image:: ./illustrations/bread_tech.png
    :width: 600px
    :alt: From wheat grains to sandwiches
    :align: center
@@ -74,5 +74,5 @@ except for the costs.
 
 .. literalinclude:: ./examples/bread_investing.txt
    :language: text
-   :emphasize-lines: 7,8,9,10,13,18,19,20,24,xs27
+   :emphasize-lines: 7,8,9,10,13,18,19,20,24,27
 

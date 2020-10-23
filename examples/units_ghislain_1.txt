@@ -1,0 +1,31 @@
+#UNIT Cost
+EUR                // base unit, no definition against another one
+kEUR = 1000 EUR
+MEUR = 1000 kEUR
+USD = 0.85348 EUR
+ 
+ 
+#UNIT Energy
+TWh = 1000 GWh
+GWh
+MWh = 0.001 GWh
+kWh = 0.001 MWh        
+Wh = 0.001 kWh
+kJ = 1 kWh * 1 sec / 1 hour // = 1 kWh / 3600
+ 
+ 
+#UNIT Power = Energy / Time
+W  = 1 Wh / 1 hour
+kW = 1 kWh / 1 hour
+MW = 1 MWh / 1 hour
+GW = 1 GWh / 1 hour
+TW = 1 TWh / 1 hour
+TWh_y = 1 TWh / 1 year
+ 
+ 
+#UNIT Time
+sec = 1 min / 60
+min = 1 hour / 60
+hour
+day = 24 hour
+year = 365 day

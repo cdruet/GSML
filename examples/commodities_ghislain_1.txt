@@ -1,0 +1,209 @@
+// “BASE” UNITS
+ 
+#UNIT Cost
+EUR
+kEUR = 1000 EUR        
+// I would not write 1000 * EUR in order to treat EUR as a “unit”, not as a “constant”
+// otherwise, how can we detect that a unit is or is not given?
+// Units will be mandatory, how to distinguish 1000 * EUR and 1000 * whateverconstant in a node?
+MEUR = 1000 kEUR
+USD = 0.85348 EUR
+ 
+ 
+#UNIT Energy
+TWh = 1000 GWh
+GWh
+MWh = 0.001 GWh
+kWh = 0.001 MWh
+Wh  = 0.001 kWh
+kJ  = 1 kWh * (1 sec / 1 hour)
+ 
+ 
+#UNIT GasVolume
+ncm                              // normal conditions   (273.15K, 1atm)
+scm  = 1 ncm * 288.15 / 273.15   // standard conditions (288.15K, 1atm)
+mncm = 1e6 * ncm
+bncm = 1e9 * ncm
+// note the explicit distinction between ncm and scm (can be useful)
+ 
+ 
+#UNIT Mass
+g = 0.001 kg
+kg
+ton = 1000 kg
+ 
+ 
+#UNIT Mole
+mol
+molecule = (1 / 6e23) mol
+// I find moles much more easy to use in chemistry!
+ 
+ 
+#UNIT Time
+sec = (1 / 60) min
+min = (1 / 60) hour
+hour
+day = 24 hour
+week = 7 day
+month(1 to 12) as day = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+year = 365 day
+ 
+ 
+ 
+// “DERIVED” UNITS
+ 
+#UNIT Power as Energy / Time
+W     =  Wh / hour
+kW    = kWh / hour
+MW    = MWh / hour
+GW    = GWh / hour
+TW    = TWh / hour
+TWh_y = TWh / year
+ 
+ 
+ 
+// “ENERGY CARRIER” OR “COMMODITIES”
+// no time reference here, everything define at “step” level
+// time refinement (day rather than hour for gas…) will be handled in nodes
+// at this level, conversion mass-energy-moles-volume can be defined per commodity
+// each commodity is an object having multiple properties (mass, volume,...)
+// I put explicit difference between hhv and lhv for methane as example
+//    (-> the more explicit we are, the less errors will be made)
+// I used a structure similar to the one used for nodes
+ 
+#COMMODITY Hydrogen as Energy
+#PARAMETERS
+Density as Mass / GasVolume = 0.089 kg / ncm         // from IEA
+GCV as Energy / GasVolume = 3.528 kWh / ncm          // from Engineering Toolbox (GCV = GCV hhv)
+molecularMass as Mass / Mole = (2 * 1) g / mol       // for H2
+#VARIABLES
+energy as Energy
+mass as Mass
+mole as Mole
+volume as GasVolume
+#CONSTRAINTS
+energy = GCV * volume
+mass = molecularMass * mole
+volume = density * mass
+ 
+ 
+#COMMODITY Methane as Energy
+#PARAMETERS
+density as Mass / GasVolume = 0.716 kg / ncm         // from Engineering Toolbox
+GCV as Energy / GasVolume = 11.06 kWh / ncm          // from Engineering Toolbox (GCV = GCV hhv)
+NCV as Energy / GasVolume = 0.9 * GCV                // as example how to explicitly make a Net Calorific Value (= GCV lhv)
+molecularMass as Mass / Mole = (12 + 4 * 1) g / mol  // for CH4
+// note that density is simplified: it should be a function of pressure and temperature
+#VARIABLES
+energy_lhv as Energy
+energy_hhv as Energy
+mass as Mass
+mole as Mole
+volume as GasVolume
+#CONSTRAINTS
+energy_lhv = NCV * volume
+energy_hhv = GCV * volume
+mass = molecularMass * mole
+volume = density * mass
+ 
+ 
+#COMMODITY Oxygen as Mass
+#PARAMETERS
+density as Mass / GasVolume = 1.429 kg / ncm         // from Wikipedia
+molecularMass as Mass / Mole = (2 * 16) g / mol      // for O2
+#VARIABLES
+mass as Mass
+mole as Mole
+volume as GasVolume
+#CONSTRAINTS
+mass = molecularMass * mole
+volume = density * mass
+ 
+ 
+#COMMODITY Water as Mass
+#PARAMETERS
+molecularMass as Mass / Mole = (2 * 1 + 16) g / mol  // for H2O
+#VARIABLES
+mass as Mass
+mole as Mole
+#CONSTRAINTS
+mass = molecularMass * mole
+ 
+ 
+ 
+// TIMESCALE 
+ 
+#TIMESCALE
+Horizon as Time = 5 year
+Step as Time =  1 hour
+ 
+ 
+ 
+// NODES
+// for every parameters or variables, I propose (in order to simplify the writing):
+// to consider “nothing” equal to a constant for the horizon
+//   => capex = x  <-> capex [horizon] = x
+// to consider “[]” equal to a variable for each step
+//   => electricity[] = x <-> electricity[step] = x
+// to specify “[time_unit] for specific time steps
+//   => capacity[year] means capacity can change every year
+ 
+ 
+#NODE Electrolysers
+ 
+#PARAMETERS
+depreciation_period as Time = 15 year
+capex as Cost / Power = 1200000 EUR / MW
+opex_period as Time = 1 year
+opex as Cost / Power = 0.05 * capex
+min_capacity as Power =   0 GW
+max_capacity as Power = 100 GW
+ 
+#VARIABLES
+internal: capacity as Power
+input: electricity[] as Energy      
+input: water[] as Water
+output: hydrogen[] as Hydrogen
+output: oxygen[] as Oxygen 
+ 
+#CONSTRAINTS
+capacity >= min_capacity
+capacity <= max_capacity
+electricity >= min_capacity
+electricity <= capacity
+Hydrogen.mole = (2/2) mol * Water.mole 
+Oxygen.mole   = (1/2) mol * Water.mole
+// 2 H2O -> 2 H2 + O2 in moles
+// less error-prone than going through mass or energy 
+Hydrogen.energy = 80% * electricity
+// through commodity definition, this is the same as:
+// Hydrogen.energy (= 3.528 kWh / ncm) needs (3.528 / 80% = 4.41 kWh of electricity)
+ 
+#OBJECTIVES
+min: cost[] as Cost = capacity * (capex / depreciation_period + opex / opex_period)
+ 
+ 
+ 
+#NODE EST2
+...
+ 
+#NODE WST2
+...
+ 
+#NODE DirectAirCapture
+...
+ 
+#NODE H2ST
+...
+ 
+ 
+ 
+// LINKS
+// note here ow we can easily use the properties of commodities!
+ 
+#LINKS
+// electrolysers
+EST2.electricity_Electrolysers = Electrolysers.electricity
+WST2.water.mass = Electrolysers.water.mass
+Electrolysers.oxygen.mass = DirectAriCapture.oxygen.mass
+Electrolysers.hydrogen.mass = H2ST.hydrogen.mass         

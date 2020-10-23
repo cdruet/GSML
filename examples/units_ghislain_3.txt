@@ -1,0 +1,36 @@
+#NODE PV
+#PARAMETERS
+depreciation_period[Time] = 25 year
+capex[Cost / Power] = 0.8 EUR / 1 W
+opex_period[Time] = 1 year
+opex[Cost / Power] = 0.02 * capex
+generation_ratio([]) = import("pv_gen.csv", null, Horizon / Step)
+// function “import”: first argument = file, second = unit of values (dimensionless), third = step unit value between each line in file (here: calc gives “hour”)
+min_capacity[Power] = 0 GW
+max_capacity[Power] = 100 GW
+#VARIABLES
+internal: capacity[Power]     // no “()” -> constant
+output: electricity([Energy]) // “()” -> array
+#CONSTRAINTS
+capacity >= min_capacity
+capacity <= max_capacity
+electricity = capacity * generation_ratio // this assumes in fact electricity[Energy] = capacity[Power] * generation_ratio[] * step[Time]
+                                          // -> so unit integrity is ok because Energy = Power * Time
+electricity >= min_capacity               // again, this assumes in fact electricity[Energy] >= min_capacity[Power] * step[Time]
+#OBJECTIVES
+min: cost([Cost]) = capacity * (capex / depreciation_period + opex / opex_period)
+// this assumes in fact cost([Cost]) = Sum_All_Step(capacity[Power] * (capex[Cost / Power] / depreciation_period[Time] + opex[Cost / Power] / opex_period[Time]) * Step[Time])
+
+#NODE EST1
+#VARIABLES
+input: electricity_PV([Energy])
+...
+#CONSTRAINTS
+electricity_PV + ... = 0 GWh 
+#OBJECTIVES // removed because no costs here
+ 
+ 
+ 
+#LINKS
+// PV
+PV.electricity = EST1.electricity_PV

@@ -1,0 +1,3 @@
+#TIMESCALE
+Horizon[Time]: 1 year
+Step[Time]: 1 hour

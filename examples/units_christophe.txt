@@ -1,0 +1,35 @@
+#UNIT Time
+hour
+day = 24 * hour
+week = 7 * day
+trimester = 13 * week
+year = 4 * trimester
+horizon = 5 * year
+
+#TIMESCALE
+step: hour
+horizon: 5 * year
+
+and set the time unit as an ‘index’ to set the dimension of variables and parameters.
+
+Let’s imagine that the installed capacity can only vary from one trimester to the next
+#PARAMETERS
+min_capacity[trimester] as Power = 0 GW
+#VARIABLES
+output: electricity[hour] as Power
+#CONSTRAINTS
+electricity < min_capacity
+
+which would automatically translater into sort of
+electricity[hour] <= min_capacity[trimester] // and automatically match hours to the corresponding trimester
+
+Note that we will very likely let some more flexibility by offering to explicitly define the index if needed 
+min_capacity[1, 5, 9, 11]… for whatever reason pleases the user
+
+Note also that we are implementing a for x in [] to be able to constraint things based on time
+
+#CONSTRAINTS
+electricity < min_capacity[tr] for tr in [0:1:4] // it means for the first 4 trimesters
+electricity < 2 * min_capacity[tr] for tr in [4:20] // assuming the capacity doubles after year 1
+
+It would enable many things, among which modelling the ageing of technologies with changing performances over time.

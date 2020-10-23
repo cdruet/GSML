@@ -1,0 +1,14 @@
+#TIMESCALE
+horizon: 1825 // 5 years * 365 days
+step: 1 // 1 day
+
+#NODE Farming
+#PARAMETERS
+available_hectares_Y1 = 100
+...
+#CONSTRAINTS
+hectares[t] <= available_hectares_Y1 for t in [0:1:365]
+hectares[t] <= available_hectares_Y2 for t in [365:1:730]
+hectares[t] <= available_hectares_Y3 for t in [730:1:1095]
+hectares[t] <= available_hectares_Y4 for t in [1095:1:1460]
+hectares[t] <= available_hectares_Y5 for t in [1460:1:1825]

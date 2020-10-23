@@ -1,0 +1,24 @@
+#TIMESCALE
+horizon: 1825 // 5 years * 365 days
+step: 1 // 1 day
+
+#NODE Farming
+#PARAMETERS
+available_hectares_Y1 = 100
+available_hectares_Y2 = 50
+available_hectares_Y3 = 150
+available_hectares_Y4 = 200
+available_hectares_Y5 = 250
+#VARIABLES
+input: crops
+internal: hectares
+output: grains
+#CONSTRAINTS
+hectares[0] <= available_hectares_Y1
+hectares[1] <= available_hectares_Y1
+hectares[2] <= available_hectares_Y1
+...
+hectares[364] <= available_hectares_Y1
+hectares[365] <= available_hectares_Y2
+...
+hectares[1824] <= available_hectares_Y5
